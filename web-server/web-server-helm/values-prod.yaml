@@ -1,0 +1,17 @@
+webServer:
+  name: web-server
+  replicaCount: 2
+  configMapName: web-server-prod-config
+  image:
+    repository: webfrontend
+    tag: latest
+    pullPolicy: Never
+  resources:
+    limits:
+      memory: "400Mi"
+      cpu: "400m"
+  containerPort: 80
+  service:
+    port: 80
+    targetPort: 3000
+    type: ClusterIP

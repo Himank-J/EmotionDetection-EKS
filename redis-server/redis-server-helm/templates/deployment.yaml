@@ -1,0 +1,66 @@
+# redis-db deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: {{ .Release.Name }}-redis-db
+spec:
+    replicas: {{ .Values.redis.replicas }}
+    selector:
+        matchLabels:
+            app: redis
+            role: master
+            release: {{ .Release.Name }}
+    template:
+        metadata:
+            labels:
+                app: redis
+                role: master
+                release: {{ .Release.Name }}
+        spec:
+            volumes:
+                - name: redis-storage
+                  persistentVolumeClaim:
+                    claimName: {{ .Release.Name }}-redis-pvc
+            containers:
+                - name: redis-master
+                  image: redis:{{ .Values.redis.imageTag }}
+                  resources:
+                      limits:
+                          cpu: {{ .Values.redis.resources.limits.cpu }}
+                          memory: {{ .Values.redis.resources.limits.memory }}
+                  command:
+                      - redis-server
+                  args:
+                      - --requirepass
+                      - $(REDIS_PASSWORD)
+                  ports:
+                      - containerPort: {{ .Values.redis.port }}
+                  volumeMounts:
+                      - name: redis-storage
+                        mountPath: /data
+                  env:
+                    - name: REDIS_PASSWORD
+                      valueFrom:
+                        secretKeyRef:
+                          name: {{ .Release.Name }}-redis-secret
+                          key: REDIS_PASSWORD 
+
+---
+
+# redis-db service
+apiVersion: v1
+kind: Service
+metadata:
+    name: {{ .Release.Name }}-redis-db-service
+    labels:
+        app: redis
+        role: master
+        release: {{ .Release.Name }}
+spec:
+    ports:
+        - port: {{ .Values.redis.port }}
+          targetPort: {{ .Values.redis.port }}
+    selector:
+        app: redis
+        role: master
+        release: {{ .Release.Name }} 

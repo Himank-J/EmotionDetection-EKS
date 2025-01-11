@@ -1,0 +1,19 @@
+replicaCount: 2
+
+image:
+  repository: modelbackend
+  tag: latest
+  pullPolicy: Never
+
+resources:
+  limits:
+    memory: "2Gi"
+    cpu: "400m"
+
+service:
+  port: 8000
+  targetPort: 8000
+  type: ClusterIP
+
+redis:
+  secretName: redis-secret

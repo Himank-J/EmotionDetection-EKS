@@ -1,0 +1,54 @@
+# model-server deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-model-server
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: model-server
+  template:
+    metadata:
+      labels:
+        app: model-server
+    spec:
+      containers:
+      - name: model-server
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
+        ports:
+        - containerPort: {{ .Values.service.targetPort }}
+        env:
+          - name: REDIS_HOST
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.redis.secretName }}
+                key: REDIS_HOST
+          - name: REDIS_PORT
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.redis.secretName }}
+                key: REDIS_PORT
+          - name: REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.redis.secretName }}
+                key: REDIS_PASSWORD
+
+---
+
+# model-server service
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-model-server-service
+spec:
+  selector:
+    app: model-server
+  ports:
+  - port: {{ .Values.service.port }}
+    targetPort: {{ .Values.service.targetPort }}
+  type: {{ .Values.service.type }}

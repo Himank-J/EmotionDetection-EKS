@@ -1,0 +1,25 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: cognitive-cluster
+  region: ap-south-1
+
+managedNodeGroups:
+  - name: ng-spot-1
+    instanceType: t3a.medium
+    minSize: 0
+    maxSize: 5
+    desiredCapacity: 0
+    spot: true
+    labels:
+      role: spot
+    propagateASGTags: true
+    iam:
+      withAddonPolicies:
+        autoScaler: true
+        externalDNS: true
+        certManager: true
+        imageBuilder: true
+        awsLoadBalancerController: true
+        ebs: true

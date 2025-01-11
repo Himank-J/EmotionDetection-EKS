@@ -1,0 +1,7 @@
+# config map
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.webServer.configMapName }}
+data:
+  NEXT_PUBLIC_MODEL_SERVER_URL: "http://127.0.0.1:55800"

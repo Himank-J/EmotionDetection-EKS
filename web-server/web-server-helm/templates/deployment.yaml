@@ -1,0 +1,46 @@
+# web-server deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.webServer.name }}
+  labels:
+    app: {{ .Values.webServer.name }}
+spec:
+  replicas: {{ .Values.webServer.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.webServer.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.webServer.name }}
+    spec:
+      containers:
+      - name: {{ .Values.webServer.name }}
+        image: "{{ .Values.webServer.image.repository }}:{{ .Values.webServer.image.tag }}"
+        imagePullPolicy: {{ .Values.webServer.image.pullPolicy }}
+        resources:
+          {{- toYaml .Values.webServer.resources | nindent 12 }}
+        ports:
+          - containerPort: {{ .Values.webServer.containerPort }}
+        env:
+        - name: NEXT_PUBLIC_MODEL_SERVER_URL
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Values.webServer.configMapName }}
+              key: NEXT_PUBLIC_MODEL_SERVER_URL
+
+---
+
+# web-server service
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.webServer.name }}-service
+spec:
+  selector:
+    app: {{ .Values.webServer.name }}
+  ports:
+  - port: {{ .Values.webServer.service.port }}
+    targetPort: {{ .Values.webServer.service.targetPort }}
+  type: {{ .Values.webServer.service.type }}

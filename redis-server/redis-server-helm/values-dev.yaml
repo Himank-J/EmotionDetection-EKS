@@ -1,0 +1,14 @@
+redis:
+  replicas: 1
+  imageTag: "7.4.1"
+  port: 6379
+  resources:
+    limits:
+      cpu: "200m"
+      memory: "200Mi"
+  password: "rediscache-dev"
+
+persistence:
+  storageClass: "local-storage"
+  size: "1Gi"
+  hostPath: "/data/redis-pv-dev/"
