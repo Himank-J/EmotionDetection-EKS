@@ -1,9 +1,8 @@
 replicaCount: 2
 
 image:
-  repository: modelbackend
+  repository: 390430468701.dkr.ecr.ap-south-1.amazonaws.com/modelbackend
   tag: latest
-  pullPolicy: Never
 
 resources:
   limits:
@@ -16,4 +15,9 @@ service:
   type: ClusterIP
 
 redis:
-  secretName: redis-secret
+  secretName: redis-release-prod-redis-secret
+
+autoscaling:
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70

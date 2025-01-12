@@ -3,9 +3,8 @@ webServer:
   replicaCount: 2
   configMapName: web-server-prod-config
   image:
-    repository: webfrontend
+    repository: 390430468701.dkr.ecr.ap-south-1.amazonaws.com/webfrontend
     tag: latest
-    pullPolicy: Never
   resources:
     limits:
       memory: "400Mi"

@@ -15,6 +15,8 @@ spec:
       labels:
         app: {{ .Values.webServer.name }}
     spec:
+      nodeSelector:
+        role: spot
       containers:
       - name: {{ .Values.webServer.name }}
         image: "{{ .Values.webServer.image.repository }}:{{ .Values.webServer.image.tag }}"

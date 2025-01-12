@@ -4,4 +4,4 @@ kind: ConfigMap
 metadata:
   name: {{ .Values.webServer.configMapName }}
 data:
-  NEXT_PUBLIC_MODEL_SERVER_URL: "http://127.0.0.1:55800"
+  NEXT_PUBLIC_MODEL_SERVER_URL: "http://k8s-default-modelser-3b1e80da26-1539415395.ap-south-1.elb.amazonaws.com"

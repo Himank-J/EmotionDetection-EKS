@@ -88,7 +88,7 @@ export default function Home() {
     formData.append('file', selectedImage)
   
     try {
-      const response = await fetch('http://127.0.0.1:65115/predict', {
+      const response = await fetch('http://k8s-default-modelser-3b1e80da26-1539415395.ap-south-1.elb.amazonaws.com/predict', {
         method: 'POST',
         body: formData,
       })

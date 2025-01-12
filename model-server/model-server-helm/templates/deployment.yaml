@@ -13,6 +13,8 @@ spec:
       labels:
         app: model-server
     spec:
+      nodeSelector:
+        role: spot
       containers:
       - name: model-server
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
@@ -52,3 +54,25 @@ spec:
   - port: {{ .Values.service.port }}
     targetPort: {{ .Values.service.targetPort }}
   type: {{ .Values.service.type }}
+
+---
+
+# model-server hpa
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ .Release.Name }}-model-server-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ .Release.Name }}-model-server
+  minReplicas: {{ .Values.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.autoscaling.maxReplicas }}
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}

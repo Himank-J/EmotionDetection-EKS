@@ -2,15 +2,16 @@ apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 
 metadata:
-  name: cognitive-cluster
+  name: eks-cluster
   region: ap-south-1
+  version: "1.30"
 
 managedNodeGroups:
   - name: ng-spot-1
     instanceType: t3a.medium
-    minSize: 0
+    minSize: 1
     maxSize: 5
-    desiredCapacity: 0
+    desiredCapacity: 1
     spot: true
     labels:
       role: spot
